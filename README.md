@@ -1,6 +1,6 @@
 # Create 2 Palo Alto VMSeries Virtual Machines in an Availability Set
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fcegloff%2paloDeploy1%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2.github.com%2Fcegloff%2paloDeploy1%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
