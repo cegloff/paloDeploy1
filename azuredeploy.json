@@ -172,21 +172,39 @@
 		  "type": "string",
 		  "defaultValue": "172.31.11.198",
 		  "metadata": {
-			"description": "Mgmt subnet start address"
+			"description": "Mgmt subnet Palo1 address"
 		  }
 		},
 		"subnet1StartAddress": {
 		  "type": "string",
 		  "defaultValue": "172.31.11.38",
 		  "metadata": {
-			"description": "Untrust subnet start address"
+			"description": "Untrust subnet Palo1 address"
 		  }
 		},
 		"subnet2StartAddress": {
 		  "type": "string",
 		  "defaultValue": "172.31.11.230",
 		  "metadata": {
-			"description": "Trust subnet start address"
+			"description": "Trust subnet Palo1 address"
+		  },
+          "subnet0Palo2Address": {
+		  "type": "string",
+		  "defaultValue": "172.31.11.199",
+		  "metadata": {
+			"description": "Mgmt subnet Palo2 address"
+		  },
+          "subnet1Palo2Address": {
+		  "type": "string",
+		  "defaultValue": "172.31.11.39",
+		  "metadata": {
+			"description": "Untrust subnet Palo2 address"
+		  },
+          "subnet2Palo2Address": {
+		  "type": "string",
+		  "defaultValue": "172.31.11.231",
+		  "metadata": {
+			"description": "Trust subnet Palo2 address"
 		  }
 		}
     },
@@ -196,9 +214,12 @@
     	"imageSku" : "byol",
 	    "imageOffer" : "vmseries1",
         "fwpublicIPName": "[concat(parameters('vmName'), '-fwMgmtPublicIP')]",
+        "fwpublicIPNamePalo2": "[concat(parameters('vmName'), '-fwMgmtPublicIP2')]",
         "nicName": "[concat(parameters('vmName'), '-eth')]",
         "FWPrivateIPAddressUntrust": "[parameters('subnet1StartAddress')]",
         "FWPrivateIPAddressTrust": "[parameters('subnet2StartAddress')]",
+        "FWPrivateIPAddressUntrust2": "[parameters('subnet1Palo2Address')]",
+        "FWPrivateIPAddressTrust2": "[parameters('subnet2Palo2Address')]",
         "publicIPAddressType": "Dynamic",
 		"availabilitySetName": "[concat('PaloAvSet', substring(uniqueString(resourceGroup().id), 0, 4))]",
         "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('virtualNetworkName'))]",
@@ -415,18 +436,20 @@
         "name": "[concat(variables('nicName'), '3')]",
         "location": "[parameters('location')]",
         "dependsOn": [
+            "[concat('Microsoft.Network/publicIPAddresses/', variables('fwpublicIPName'))]",
             "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]"
         ],
         "tags": {
             "displayName": "[concat('NetworkInterfaces', '3')]"
         },
         "properties": {
-            "enableIPForwarding": true,
             "ipConfigurations": [{
                 "name": "[concat('ipconfig', '3')]",
                 "properties": {
-                    "privateIPAllocationMethod": "Static",
-                    "privateIPAddress": "[variables('FWPrivateIPAddressTrust')]",
+                    "privateIPAllocationMethod": "Dynamic",
+                    "publicIPAddress": {
+                        "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('fwpublicIPNamePalo2'))]"
+                    },
                     "subnet": {
                         "id": "[variables(concat('subnet','0','Ref'))]"
                     }
@@ -451,7 +474,7 @@
                 "name": "[concat('ipconfig', '4')]",
                 "properties": {
                     "privateIPAllocationMethod": "Static",
-                    "privateIPAddress": "[variables('FWPrivateIPAddressTrust')]",
+                    "privateIPAddress": "[variables('FWPrivateIPAddressUntrust2')]",
                     "subnet": {
                         "id": "[variables(concat('subnet','1','Ref'))]"
                     }
@@ -476,7 +499,7 @@
                 "name": "[concat('ipconfig', '5')]",
                 "properties": {
                     "privateIPAllocationMethod": "Static",
-                    "privateIPAddress": "[variables('FWPrivateIPAddressTrust')]",
+                    "privateIPAddress": "[variables('FWPrivateIPAddressTrust2')]",
                     "subnet": {
                         "id": "[variables(concat('subnet','2','Ref'))]"
                     }
