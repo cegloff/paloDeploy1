@@ -426,12 +426,12 @@
           "uri": "[variables('vmTemplateUrl')]",
           "contentVersion": "1.0.0.0"
         },
-		"availabilitySetName": {
-            "value": "[variables('availabilitySetName')]"
-        },
         "parameters": {
           "location": {
             "value": "[parameters('location')]"
+          },
+          "availabilitySetName": {
+            "value": "[variables('availabilitySetName')]"
           },
           "vmName": {
             "value": "[parameters('vmName')]"
